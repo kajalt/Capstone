@@ -1,26 +1,29 @@
 package com.capstone.productservice.controllers;
 
-import com.capstone.productservice.models.Product;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import com.capstone.productservice.dto.ProductDTO;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class ProductController {
     @GetMapping("/products")
-    public List<Product> getAllProducts() {
+    public List<ProductDTO> getAllProducts() {
         return null;
     }
 
-    @GetMapping("product/{id}")
-    public Product getProductById(@PathVariable long id) {
-        Product product = new Product();
-        product.setProductName("name");
-        product.setProductDescription("description");
-        product.setId(id);
-        product.setProductPrice(1200.0);
-        return product;
+    @GetMapping("products/{id}")
+    public ProductDTO getProductById(@PathVariable long id) {
+        ProductDTO productDTO = new ProductDTO();
+        productDTO.setProductName("name");
+        productDTO.setProductDescription("description");
+        productDTO.setId(id);
+        productDTO.setProductPrice(1200.0);
+        return productDTO;
+    }
+
+    @PostMapping("/products/create")
+    public ProductDTO createProduct(@RequestBody ProductDTO productDTO) {
+        return productDTO;
     }
 }
