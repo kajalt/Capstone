@@ -1,6 +1,5 @@
 package com.capstone.productservice.dto;
 
-import com.capstone.productservice.models.Category;
 import lombok.Getter;
 import lombok.Setter;
 
