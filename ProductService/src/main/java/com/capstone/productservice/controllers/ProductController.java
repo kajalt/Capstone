@@ -1,12 +1,21 @@
 package com.capstone.productservice.controllers;
 
 import com.capstone.productservice.dto.ProductDTO;
+import com.capstone.productservice.models.Product;
+import com.capstone.productservice.services.ProductService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 public class ProductController {
+
+    private ProductService productService;
+
+    public ProductController(ProductService productService) {
+        this.productService = productService;
+    }
+
     @GetMapping("/products")
     public List<ProductDTO> getAllProducts() {
         return null;
@@ -14,12 +23,8 @@ public class ProductController {
 
     @GetMapping("products/{id}")
     public ProductDTO getProductById(@PathVariable long id) {
-        ProductDTO productDTO = new ProductDTO();
-        productDTO.setProductName("name");
-        productDTO.setProductDescription("description");
-        productDTO.setId(id);
-        productDTO.setProductPrice(1200.0);
-        return productDTO;
+        Product product = productService.getProduct(id);
+        return new ProductDTO(product);
     }
 
     @PostMapping("/products/create")
