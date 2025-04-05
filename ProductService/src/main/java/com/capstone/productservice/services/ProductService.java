@@ -1,12 +1,16 @@
 package com.capstone.productservice.services;
 
-import com.capstone.productservice.dto.ProductDTO;
 import com.capstone.productservice.models.Product;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
 public interface ProductService {
     List<Product> getAllProducts();
+
     Product getProduct(Long productId);
-    ProductDTO createProduct(ProductDTO productDto);
+
+    Product createProduct(Product product);
+
+    Product replaceProduct(Long id, ResponseEntity<Product> product);
 }
