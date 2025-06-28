@@ -1,10 +1,12 @@
 package com.capstone.productservice.controllers;
 
 import com.capstone.productservice.dto.ProductDTO;
+import com.capstone.productservice.models.Category;
 import com.capstone.productservice.models.Product;
 import com.capstone.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.util.LinkedMultiValueMap;
 //import org.springframework.util.MultiValueMap;
@@ -45,11 +47,10 @@ public class ProductController {
 //        }
     }
 
-    @PostMapping("/products/create")
-    public Product createProduct(@RequestBody Product product) {
-        return productService.createProduct(product);
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    public Product createProduct(@RequestBody ProductDTO productDto) {
+        return productService.createProduct(new Product(productDto));
     }
-
     @PutMapping("{id}")
     public Product replaceProduct(@PathVariable("id") Long id, @RequestBody ProductDTO productDto) {
         return productService.replaceProduct(id, getProduct(productDto.getId()));
