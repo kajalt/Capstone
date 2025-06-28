@@ -4,7 +4,7 @@ import com.capstone.productservice.models.Product;
 import org.springframework.context.annotation.Primary;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import repositories.ProductRepository;
+import com.capstone.productservice.repositories.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;

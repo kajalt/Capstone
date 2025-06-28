@@ -1,7 +1,9 @@
-package repositories;
+package com.capstone.productservice.repositories;
 
 import com.capstone.productservice.models.Product;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,4 +23,10 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
 
     //List<Product> findAllOrderByIdDesc();
     List<Product> findAllByOrderByIdDesc();
+
+    @Query("select p.name from Product p where p.id=:id1")
+    String getProductNameFromId(@Param("id1") Long id);
+
+    @Query("select c.name from Product p join Category c on p.category.id=c.id and p.id=?1")
+    String getCategoryNameFromProductId(Long id);
 }
