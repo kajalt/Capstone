@@ -33,6 +33,8 @@ public class ProductServiceImpl implements ProductService {
         RestTemplate restTemplate = restTemplateBuilder.build();
         FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForEntity("https://fakestoreapi.com/products/", FakeStoreProductDto[].class).getBody();
         List<Product> products = new ArrayList<>();
+        if(fakeStoreProductDtos == null)
+            return products;
         for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
             products.add(getProduct(fakeStoreProductDto));
         }
@@ -61,9 +63,9 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public Product replaceProduct(Long id, ResponseEntity<Product> product) {
+    public Product replaceProduct(Long id, Product product) {
         RestTemplate restTemplate = restTemplateBuilder.build();
-        FakeStoreProductDto req_fsp_dto = getFakeStoreProductDto(product.getBody());
+        FakeStoreProductDto req_fsp_dto = getFakeStoreProductDto(product);
         ResponseEntity<FakeStoreProductDto> fsp_dto_response =
                 putForEntity("https://fakestoreapi.com/products/{id}",
                         req_fsp_dto, FakeStoreProductDto.class, id);

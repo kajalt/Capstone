@@ -12,5 +12,5 @@ public interface ProductService {
 
     Product createProduct(Product product);
 
-    Product replaceProduct(Long id, ResponseEntity<Product> product);
+    Product replaceProduct(Long id, Product product);
 }

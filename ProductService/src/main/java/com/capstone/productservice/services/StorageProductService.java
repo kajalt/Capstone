@@ -9,7 +9,7 @@ import com.capstone.productservice.repositories.ProductRepository;
 import java.util.List;
 import java.util.Optional;
 
-@Primary
+//@Primary
 @Service
 public class StorageProductService implements ProductService {
 
@@ -40,7 +40,7 @@ public class StorageProductService implements ProductService {
     }
 
     @Override
-    public Product replaceProduct(Long id, ResponseEntity<Product> product) {
+    public Product replaceProduct(Long id, Product product) {
         return null;
     }
 }

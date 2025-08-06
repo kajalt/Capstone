@@ -5,6 +5,7 @@ import com.capstone.productservice.models.Category;
 import com.capstone.productservice.models.Product;
 import com.capstone.productservice.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +19,7 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
+    @Qualifier("productservicestub")
     private ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -53,6 +55,6 @@ public class ProductController {
     }
     @PutMapping("{id}")
     public Product replaceProduct(@PathVariable("id") Long id, @RequestBody ProductDTO productDto) {
-        return productService.replaceProduct(id, getProduct(productDto.getId()));
+        return productService.replaceProduct(id, this.getProduct(productDto.getId()).getBody());
     }
 }
