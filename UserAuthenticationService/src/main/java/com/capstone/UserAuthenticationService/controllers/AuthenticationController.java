@@ -1,10 +1,16 @@
 package com.capstone.UserAuthenticationService.controllers;
 
+import com.capstone.UserAuthenticationService.dtos.LoginRequestDto;
+import com.capstone.UserAuthenticationService.dtos.LogoutRequestDto;
 import com.capstone.UserAuthenticationService.dtos.SignupRequestDto;
 import com.capstone.UserAuthenticationService.dtos.UserDto;
+import com.capstone.UserAuthenticationService.models.User;
+import com.capstone.UserAuthenticationService.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +35,12 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<UserDto> login(@RequestBody LoginRequestDto loginRequestDto) {
-        return null;
+        try {
+            Pair<User, MultiValueMap<String,String>> bodyWithHeaders = authService.login(loginRequestDto.getEmail(),loginRequestDto.getPassword());
+            return new ResponseEntity<>(getUserDto(bodyWithHeaders.a),bodyWithHeaders.b, HttpStatus.OK);
+        } catch (Exception exception) {
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/logout")
