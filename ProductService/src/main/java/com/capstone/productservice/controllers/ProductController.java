@@ -19,7 +19,7 @@ import java.util.List;
 public class ProductController {
 
     @Autowired
-    @Qualifier("productservicestub")
+    // @Qualifier("productservicestub")
     private ProductService productService;
 
     public ProductController(ProductService productService) {
@@ -53,6 +53,7 @@ public class ProductController {
     public Product createProduct(@RequestBody ProductDTO productDto) {
         return productService.createProduct(new Product(productDto));
     }
+
     @PutMapping("{id}")
     public Product replaceProduct(@PathVariable("id") Long id, @RequestBody ProductDTO productDto) {
         return productService.replaceProduct(id, this.getProduct(productDto.getId()).getBody());

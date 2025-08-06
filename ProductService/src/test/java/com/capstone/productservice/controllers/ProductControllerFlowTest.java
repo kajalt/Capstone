@@ -27,20 +27,17 @@ public class ProductControllerFlowTest {
 
         //Act
         Product product = productController.createProduct(productDto);
-        ResponseEntity<Product> productResponseEntity = productController
-                .getProduct(product.getId());
+        ResponseEntity<Product> productResponseEntity = productController.getProduct(product.getId());
 
         productDto.setProductName("Iphone 15");
-        Product replacedProduct = productController
-                .replaceProduct(product.getId(),productDto);
+        Product replacedProduct = productController.replaceProduct(product.getId(), productDto);
 
-        ResponseEntity<Product> productResponseEntity2 = productController
-                .getProduct(replacedProduct.getId());
+        ResponseEntity<Product> productResponseEntity2 = productController.getProduct(replacedProduct.getId());
 
 
         //Assert
-        assertEquals("Iphone 14",productResponseEntity.getBody().getProductName());
-        assertEquals("Iphone 15",productResponseEntity2.getBody().getProductName());
+        assertEquals("Iphone 14", productResponseEntity.getBody().getProductName());
+        assertEquals("Iphone 15", productResponseEntity2.getBody().getProductName());
     }
 
 }

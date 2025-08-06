@@ -2,14 +2,13 @@ package com.capstone.productservice.services;
 
 import com.capstone.productservice.models.Product;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import com.capstone.productservice.repositories.ProductRepository;
 
 import java.util.List;
 import java.util.Optional;
 
-//@Primary
+@Primary
 @Service
 public class StorageProductService implements ProductService {
 
@@ -18,6 +17,7 @@ public class StorageProductService implements ProductService {
     public StorageProductService(ProductRepository productRepo) {
         this.productRepo = productRepo;
     }
+
     @Override
     public List<Product> getAllProducts() {
         return null;
@@ -26,7 +26,7 @@ public class StorageProductService implements ProductService {
     @Override
     public Product getProduct(Long productId) {
         Optional<Product> optionalProduct = productRepo.findProductById(productId);
-        if(optionalProduct.isEmpty()) {
+        if (optionalProduct.isEmpty()) {
             return null;
         }
 
