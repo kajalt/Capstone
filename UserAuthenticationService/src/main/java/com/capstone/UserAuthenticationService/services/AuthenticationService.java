@@ -1,5 +1,6 @@
 package com.capstone.UserAuthenticationService.services;
 
+import com.capstone.UserAuthenticationService.models.Session;
 import com.capstone.UserAuthenticationService.models.User;
 import com.capstone.UserAuthenticationService.repositories.SessionRepository;
 import com.capstone.UserAuthenticationService.repositories.UserRepository;
@@ -31,6 +32,10 @@ public class AuthenticationService {
     @Autowired
     private SessionRepository sessionRepository;
 
+    @Autowired
+    private SecretKey secretKey;
+
+
     public User signUp(String email, String password) {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
@@ -61,8 +66,8 @@ public class AuthenticationService {
         claims.put("email",optionalUser.get().getEmail());
         claims.put("roles",optionalUser.get().getRoleSet());
         long nowInMillis = System.currentTimeMillis();
-        claims.put("iat",new Date(nowInMillis));
-        claims.put("exp",new Date(nowInMillis+1000000));
+        claims.put("iat",nowInMillis);
+        claims.put("exp",nowInMillis+100000000L);
 
 
         MacAlgorithm algorithm = Jwts.SIG.HS256;
@@ -81,5 +86,39 @@ public class AuthenticationService {
         headers.add(HttpHeaders.SET_COOKIE,token);
 
         return new Pair<User,MultiValueMap<String,String>>(optionalUser.get(),headers);
+    }
+
+    public Boolean validateToken(String token,Long userId) {
+        Optional<Session> optionalSession = sessionRepository.findByTokenAndUser_Id(token,userId);
+
+        if(optionalSession.isEmpty()) {
+            System.out.println("User or Token not found");
+            return false;
+        }
+
+        JwtParser jwtParser = Jwts.parser().verifyWith(secretKey).build();
+        Claims claims = jwtParser.parseSignedClaims(token).getPayload();
+
+        long tokenExpiry = (Long)claims.get("exp");
+        long nowInMillis = System.currentTimeMillis();
+
+        if(nowInMillis > tokenExpiry) {
+            System.out.println(tokenExpiry);
+            System.out.println(nowInMillis);
+            System.out.println("Token Expired");
+            return false;
+        }
+
+        Optional<User> optionalUser  = userRepository.findById(userId);
+        String userEmail = optionalUser.get().getEmail();
+
+        if(!userEmail.equals(claims.get("email"))) {
+            System.out.println(userEmail);
+            System.out.println(claims.get("email"));
+            System.out.println("Emails didn't match");
+            return false;
+        }
+
+        return true;
     }
 }

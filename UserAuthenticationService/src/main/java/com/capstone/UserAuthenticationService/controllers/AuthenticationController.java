@@ -1,9 +1,6 @@
 package com.capstone.UserAuthenticationService.controllers;
 
-import com.capstone.UserAuthenticationService.dtos.LoginRequestDto;
-import com.capstone.UserAuthenticationService.dtos.LogoutRequestDto;
-import com.capstone.UserAuthenticationService.dtos.SignupRequestDto;
-import com.capstone.UserAuthenticationService.dtos.UserDto;
+import com.capstone.UserAuthenticationService.dtos.*;
 import com.capstone.UserAuthenticationService.models.User;
 import com.capstone.UserAuthenticationService.services.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,5 +50,10 @@ public class AuthenticationController {
         userDto.setEmail(user.getEmail());
         userDto.setRoleSet(user.getRoleSet());
         return userDto;
+    }
+
+    @PostMapping("/validate")
+    public ResponseEntity<Boolean> validateToken(@RequestBody ValidateTokenRequestDto validateTokenRequestDto) {
+        return new ResponseEntity<>(authService.validateToken(validateTokenRequestDto.getToken(),validateTokenRequestDto.getUserId()),HttpStatus.OK);
     }
 }
