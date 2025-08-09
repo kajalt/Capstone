@@ -103,4 +103,10 @@ public class ProductServiceImpl implements ProductService {
         product.setCategory(category);
         return product;
     }
+
+    @Override
+    public Product getProductDetails(Long productId, Long userId) {
+        return null;
+    }
+
 }

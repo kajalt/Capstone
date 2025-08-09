@@ -58,4 +58,11 @@ public class ProductController {
     public Product replaceProduct(@PathVariable("id") Long id, @RequestBody ProductDTO productDto) {
         return productService.replaceProduct(id, this.getProduct(productDto.getId()).getBody());
     }
+
+    @GetMapping("{pid}/{uid}")
+    public Product getProductDetailsBasedOnUserScope(@PathVariable Long pid,@PathVariable Long uid) {
+        Product product = productService.getProductDetails(pid,uid);
+        return product;
+    }
+
 }

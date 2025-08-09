@@ -19,12 +19,12 @@ public class ProductServiceStub implements ProductService {
 
     @Override
     public List<Product> getAllProducts() {
-        return (List)productMap.values();
+        return (List) productMap.values();
     }
 
     @Override
     public Product getProduct(Long productId) {
-        if(productMap.containsKey(productId)) {
+        if (productMap.containsKey(productId)) {
             return productMap.get(productId);
         }
 
@@ -33,13 +33,18 @@ public class ProductServiceStub implements ProductService {
 
     @Override
     public Product createProduct(Product product) {
-        productMap.put(product.getId(),product);
+        productMap.put(product.getId(), product);
         return productMap.get(product.getId());
     }
 
     @Override
     public Product replaceProduct(Long id, Product product) {
-        productMap.put(id,product);
+        productMap.put(id, product);
         return productMap.get(id);
+    }
+
+    @Override
+    public Product getProductDetails(Long productId, Long userId) {
+        return null;
     }
 }
