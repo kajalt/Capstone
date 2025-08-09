@@ -5,6 +5,8 @@ import com.capstone.productservice.dto.FakeStoreProductDto;
 import com.capstone.productservice.models.Category;
 import com.capstone.productservice.models.Product;
 import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
@@ -17,15 +19,18 @@ import org.springframework.web.client.RestTemplate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Primary
 @Service
 public class ProductServiceImpl implements ProductService {
 
     private final RestTemplateBuilder restTemplateBuilder;
     private final FakeStoreApiClient fakeStoreApiClient;
+    private RedisTemplate<String, Object> redisTemplate;
 
-    public ProductServiceImpl(RestTemplateBuilder restTemplateBuilder, FakeStoreApiClient fakeStoreApiClient) {
+    public ProductServiceImpl(RestTemplateBuilder restTemplateBuilder, FakeStoreApiClient fakeStoreApiClient, RedisTemplate<String, Object> redisTemplate) {
         this.restTemplateBuilder = restTemplateBuilder;
         this.fakeStoreApiClient = fakeStoreApiClient;
+        this.redisTemplate = redisTemplate;
     }
 
     @Override
@@ -33,9 +38,9 @@ public class ProductServiceImpl implements ProductService {
         RestTemplate restTemplate = restTemplateBuilder.build();
         FakeStoreProductDto[] fakeStoreProductDtos = restTemplate.getForEntity("https://fakestoreapi.com/products/", FakeStoreProductDto[].class).getBody();
         List<Product> products = new ArrayList<>();
-        if(fakeStoreProductDtos == null)
+        if (fakeStoreProductDtos == null)
             return products;
-        for(FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
+        for (FakeStoreProductDto fakeStoreProductDto : fakeStoreProductDtos) {
             products.add(getProduct(fakeStoreProductDto));
         }
         return products;
@@ -50,7 +55,19 @@ public class ProductServiceImpl implements ProductService {
         if (productId <= 0) {
             throw new IllegalArgumentException("Invalid productId, please pass some valid id");
         }
-        FakeStoreProductDto fakeStoreProductDto = fakeStoreApiClient.getProduct(productId);
+//        FakeStoreProductDto fakeStoreProductDto = fakeStoreApiClient.getProduct(productId);
+//        Don't always call fakeStoreApiClient. First check in cache, if miss then call fakeStoreApiClient
+
+        FakeStoreProductDto fakeStoreProductDto = null;
+        fakeStoreProductDto = (FakeStoreProductDto) redisTemplate.opsForHash().get("PRODUCTS", productId);
+        if (fakeStoreProductDto != null) {
+            System.out.println("Found in Cache");
+            return getProduct(fakeStoreProductDto);
+        }
+
+        fakeStoreProductDto = fakeStoreApiClient.getProduct(productId);
+        System.out.println("Called FakeStore");
+        redisTemplate.opsForHash().put("PRODUCTS", productId, fakeStoreProductDto);
         return getProduct(fakeStoreProductDto);
     }
 
