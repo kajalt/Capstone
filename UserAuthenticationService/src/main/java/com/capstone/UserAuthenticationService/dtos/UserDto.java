@@ -2,7 +2,7 @@ package com.capstone.UserAuthenticationService.dtos;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.example.userauthenticationservice_april.models.Role;
+import com.capstone.UserAuthenticationService.models.Role;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -12,5 +12,5 @@ import java.util.Set;
 public class UserDto {
     private String email;
 
-    private Set<Role> roleSet = new HashSet<>();
+//    private Set<Role> roleSet = new HashSet<>();
 }

@@ -48,7 +48,7 @@ public class AuthenticationController {
     private UserDto getUserDto(User user) {
         UserDto userDto = new UserDto();
         userDto.setEmail(user.getEmail());
-        userDto.setRoleSet(user.getRoleSet());
+//        userDto.setRoleSet(user.getRoleSet());
         return userDto;
     }
 
