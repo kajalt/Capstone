@@ -1,9 +1,13 @@
 package com.capstone.UserAuthenticationService.services;
 
+import com.capstone.UserAuthenticationService.clients.KafkaProducerClient;
+import com.capstone.UserAuthenticationService.dtos.EmailDto;
 import com.capstone.UserAuthenticationService.models.Session;
 import com.capstone.UserAuthenticationService.models.User;
 import com.capstone.UserAuthenticationService.repositories.SessionRepository;
 import com.capstone.UserAuthenticationService.repositories.UserRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.MacAlgorithm;
 import org.antlr.v4.runtime.misc.Pair;
@@ -15,7 +19,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import javax.crypto.SecretKey;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -35,8 +38,13 @@ public class AuthenticationService {
     @Autowired
     private SecretKey secretKey;
 
+    @Autowired
+    private KafkaProducerClient kafkaProducerClient;
 
-    public User signUp(String email, String password) {
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    public User signUp(String email, String password)  {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isPresent()) {
             return null;
@@ -46,6 +54,20 @@ public class AuthenticationService {
         user.setEmail(email);
         user.setPassword(bCryptPasswordEncoder.encode(password));
         userRepository.save(user);
+        //SENDING MESSAGE IN KAFKA
+        //UserDto userDto = new UserDto();
+        //userDto.setEmail(email);
+        EmailDto emailDto = new EmailDto();
+        emailDto.setTo(email);
+        emailDto.setFrom("anuragbatch@gmail.com");
+        emailDto.setSubject("WELCOME TO SCALER");
+        emailDto.setBody("Have a good Learning Experience");
+        try {
+            kafkaProducerClient.sendMessage("sendEmail", objectMapper.writeValueAsString(emailDto));
+            return user;
+        }catch(JsonProcessingException ex) {
+            throw new RuntimeException(ex);
+        }
         return user;
     }
 
